@@ -1,8 +1,7 @@
 import pyautogui
 import cv2
 import time
-import actions as ac
-import ingame
+import doacntion
 
 threshold = 0.02
 imgs = ['begin_room.png','ready.png']
@@ -72,16 +71,14 @@ def ifroutinpress(img_path,name,key):
         global To_action
         To_action = False
         return True
-action=[ac.keylong_w,ac.keylong_a,ac.keylong_d,ac.keylong_s,ac.press_j,ac.space,ac.press_simulta_aw,ac.press_simulta_dw,ac.press_simulta_sd,ac.press_simulta_sa,ac.press_simulta_spacea]
-
-# 同时长按'a'和'b'键
 #时间戳
 last_executed_times = {
     'begin_room.png': 0,
     'begin.png': 0,
     'ready.png': 0,
     'endgame.png': 0,
-    'expup2.png': 0
+    'expup2.png': 0,
+    'quickgame.png': 0
 }
 def execute_condition(condition, last_executed_times, interval):
     if current_time - last_executed_times[condition] >= interval:
@@ -90,28 +87,31 @@ def execute_condition(condition, last_executed_times, interval):
     else:
         return False
 actionready = False
+game_number = 0
 while True:
-    print("action状态",actionready)
     current_time = time.time()
     getScreemshot()
-    time.sleep(1)
-    if execute_condition('ready.png', last_executed_times, 60):
+    time.sleep(0.3)
+    if execute_condition('ready.png', last_executed_times, 50):
         if ifroutinpress('ready3.png', '准备','space'):
+            time.sleep(20)
             actionready = True
     if execute_condition('endgame.png', last_executed_times, 10):
         if ifrouutineclick('end.png', '结束游戏'):
             actionready = False
+            game_number=game_number+1
     if execute_condition('begin_room.png', last_executed_times, 20):
         routineclick('begin_room.png','开始游戏')
-    if execute_condition('begin.png', last_executed_times, 10):
         routineclick('begin.png','开始游戏')
     if execute_condition('expup2.png', last_executed_times,300):
         routineclick('expup.png', '升级')
     if execute_condition('expup2.png', last_executed_times, 300):
         routineclick('expup2.png', '升级2')
+    if execute_condition('quickgame.png', last_executed_times, 300):
+        routineclick('quickgame.png', '快速游戏')
     if actionready: #只在准备后结束前运行
         if To_action: #只在没有检测到目标图片时运行
-            ingame.doaction(action)
+            doacntion.action(game_number)
     To_action = True
     time.sleep(0.3)
 

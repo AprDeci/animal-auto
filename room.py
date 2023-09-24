@@ -1,2 +1,0 @@
-import pyautogui
-img = pyautogui.
