@@ -2,8 +2,8 @@ import pyautogui
 import cv2
 import time
 import doacntion
-
-threshold = 0.02
+import sys
+threshold = 0.01
 imgs = ['begin_room.png','ready.png']
 To_action = True
 
@@ -80,7 +80,7 @@ last_executed_times = {
     'expup2.png': 0,
     'quickgame.png': 0
 }
-def execute_condition(condition, last_executed_times, interval):
+def execute_condition(current_time,condition, last_executed_times, interval):
     if current_time - last_executed_times[condition] >= interval:
         last_executed_times[condition] = current_time
         return True
@@ -88,31 +88,52 @@ def execute_condition(condition, last_executed_times, interval):
         return False
 actionready = False
 game_number = 0
-while True:
-    current_time = time.time()
-    getScreemshot()
-    time.sleep(0.3)
-    if execute_condition('ready.png', last_executed_times, 50):
-        if ifroutinpress('ready3.png', '准备','space'):
-            time.sleep(20)
-            actionready = True
-    if execute_condition('endgame.png', last_executed_times, 10):
-        if ifrouutineclick('end.png', '结束游戏'):
-            actionready = False
-            game_number=game_number+1
-    if execute_condition('begin_room.png', last_executed_times, 20):
-        routineclick('begin_room.png','开始游戏')
-        routineclick('begin.png','开始游戏')
-    if execute_condition('expup2.png', last_executed_times,300):
-        routineclick('expup.png', '升级')
-    if execute_condition('expup2.png', last_executed_times, 300):
-        routineclick('expup2.png', '升级2')
-    if execute_condition('quickgame.png', last_executed_times, 300):
-        routineclick('quickgame.png', '快速游戏')
-    if actionready: #只在准备后结束前运行
-        if To_action: #只在没有检测到目标图片时运行
-            doacntion.action(game_number)
-    To_action = True
-    time.sleep(0.3)
+time_exit=False
+def exit():
+    time.sleep(2)
+    pyautogui.press('esc')
+    time.sleep(1)
+    while True:
+        getScreemshot()
+        time.sleep(0.8)
+        routineclick('./imgs/exit.png','退出游戏')
+        if ifrouutineclick('./imgs/exitis.png','是'):
+            sys.exit()
 
+def main():
+    global game_number, actionready, To_action
+    while True:
+        start = time.time()
+        current_time = time.time()
+        getScreemshot()
+        time.sleep(0.3)
+        if execute_condition(current_time,'ready.png', last_executed_times, 30):
+            if ifroutinpress('./imgs/ready3.png', '准备', 'space'):
+                time.sleep(20)
+                actionready = True
+        if execute_condition(current_time,'endgame.png', last_executed_times, 5):
+            if ifrouutineclick('./imgs/end.png', '结束游戏'):
+                actionready = False
+        if execute_condition(current_time,'begin_room.png', last_executed_times, 5):
+            routineclick('./imgs/begin_room.png', '开始游戏')
 
+        if execute_condition(current_time,'begin.png', last_executed_times, 5):
+           if ifrouutineclick('./imgs/begin.png', '开始游戏'):
+                game_number = game_number + 1
+        if execute_condition(current_time,'expup2.png', last_executed_times, 50):
+            routineclick('./imgs/expup.png', '升级')
+        if execute_condition(current_time,'expup2.png', last_executed_times, 50):
+            routineclick('./imgs/expup2.png', '升级2')
+        if execute_condition(current_time,'quickgame.png', last_executed_times, 50):
+            routineclick('./imgs/quickgame.png', '快速游戏')
+        if actionready:  # 只在准备后结束前运行
+            if To_action:  # 只在没有检测到目标图片时运行
+                doacntion.action(game_number)
+        end = time.time()
+        print(end-start)
+        To_action = True
+        time.sleep(0.3)
+
+if __name__ == '__main__':
+    main()
+    #exit()

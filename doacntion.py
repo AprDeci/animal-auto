@@ -44,5 +44,5 @@ keys=[
 def action(game_number):
     for i in range(3,5):
         nextkeys = random.choice(keys)
-        print(f"第{game_number}局:".join(nextkeys))
+        print(f"第{game_number}局:", nextkeys)
         press_simulta_keys(nextkeys)

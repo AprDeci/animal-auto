@@ -1,4 +1,9 @@
 # Animalparty-auto
+
+## room.py-自创房间挂机脚本
+
+## main.py-快速游戏挂机脚本
+
  动物派对自动匹配挂机脚本
 
 使用Opencv2+pyautogui自动识图点击操作.
