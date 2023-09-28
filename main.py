@@ -1,3 +1,4 @@
+import os
 import pyautogui
 import cv2
 import time
@@ -89,7 +90,9 @@ def execute_condition(current_time,condition, last_executed_times, interval):
 actionready = False
 game_number = 0
 time_exit=False
-def exit():
+isshutdown = False
+
+def exit(shutdown):
     time.sleep(2)
     pyautogui.press('esc')
     time.sleep(1)
@@ -98,25 +101,25 @@ def exit():
         time.sleep(0.8)
         routineclick('./imgs/exit.png','退出游戏')
         if ifrouutineclick('./imgs/exitis.png','是'):
-            sys.exit()
+            if shutdown:
+                os.system("shutdown -s -t  5 ")
+            sys.exit()#退出程序
 
-def main():
+def main(limitNumber,shutdown,gameNumber):
     global game_number, actionready, To_action
     while True:
-        start = time.time()
         current_time = time.time()
         getScreemshot()
         time.sleep(0.3)
         if execute_condition(current_time,'ready.png', last_executed_times, 30):
             if ifroutinpress('./imgs/ready3.png', '准备', 'space'):
                 time.sleep(20)
-                actionready = True
-        if execute_condition(current_time,'endgame.png', last_executed_times, 5):
+        if execute_condition(current_time, 'endgame.png', last_executed_times, 5):
             if ifrouutineclick('./imgs/end.png', '结束游戏'):
                 actionready = False
-        if execute_condition(current_time,'begin_room.png', last_executed_times, 5):
-            routineclick('./imgs/begin_room.png', '开始游戏')
-
+                if (limitNumber):
+                    if (game_number == gameNumber):
+                        exit(shutdown)
         if execute_condition(current_time,'begin.png', last_executed_times, 5):
            if ifrouutineclick('./imgs/begin.png', '开始游戏'):
                 game_number = game_number + 1
@@ -129,11 +132,8 @@ def main():
         if actionready:  # 只在准备后结束前运行
             if To_action:  # 只在没有检测到目标图片时运行
                 doacntion.action(game_number)
-        end = time.time()
-        print(end-start)
         To_action = True
         time.sleep(0.3)
-
 if __name__ == '__main__':
     main()
     #exit()
