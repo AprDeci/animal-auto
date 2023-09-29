@@ -116,6 +116,7 @@ def exit(shutdown):
 def main(limitNumber,shutdown,gameNumber):
     global game_number, actionready, To_action
     while True:
+        print("test")
         current_time = time.time()
         getScreemshot()
         time.sleep(0.3)

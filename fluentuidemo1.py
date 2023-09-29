@@ -100,7 +100,7 @@ class Ui_mainWindow(object):
         self.retranslateUi(mainWindow)
         self.quickgamebutton.clicked.connect(mainWindow.beginquick) # type: ignore
         self.roombuttom.clicked.connect(mainWindow.beginroom) # type: ignore
-        self.ifshutdown.clicked.connect(self.ifNumber.click) # type: ignore
+        self.ifshutdown.clicked.connect(lambda:self.ifNumber.setChecked(True))# type: ignore
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
 
     def retranslateUi(self, mainWindow):
