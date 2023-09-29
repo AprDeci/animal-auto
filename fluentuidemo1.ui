@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>289</height>
+    <width>456</width>
+    <height>245</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -15,6 +15,11 @@
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#mainWindow{
+	background-color: qlineargradient(spread:pad, x1:0.233831, y1:0.267, x2:0.831025, y2:0.880364, stop:0 rgba(245,247,250,1), stop:1 rgba(195,207,226));
+}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="layoutWidget">
@@ -137,7 +142,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -181,16 +186,6 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>448</width>
-     <height>26</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>
@@ -231,11 +226,11 @@
    <sender>quickgamebutton</sender>
    <signal>clicked()</signal>
    <receiver>mainWindow</receiver>
-   <slot>begiquick()</slot>
+   <slot>beginquick()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>360</x>
-     <y>154</y>
+     <x>412</x>
+     <y>142</y>
     </hint>
     <hint type="destinationlabel">
      <x>411</x>
@@ -250,8 +245,8 @@
    <slot>beginroom()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>177</x>
-     <y>155</y>
+     <x>178</x>
+     <y>142</y>
     </hint>
     <hint type="destinationlabel">
      <x>212</x>
@@ -259,9 +254,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>ifshutdown</sender>
+   <signal>clicked()</signal>
+   <receiver>ifNumber</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>357</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>95</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>begiquick()</slot>
+  <slot>beginquick()</slot>
   <slot>beginroom()</slot>
  </slots>
 </ui>

@@ -51,6 +51,13 @@ def ifrouutineclick(img_path,name):
         global To_action
         To_action = False
         return True
+def ifthereimg(img_path,name):
+    avg = getxy(img_path)
+    if avg == None:
+        return False
+    else:
+        print(f"{name},{avg}")
+        return True
 def routinespace(img_path,name):
     avg = getxy(img_path)
     if avg == None:
@@ -79,7 +86,8 @@ last_executed_times = {
     'ready.png': 0,
     'endgame.png': 0,
     'expup2.png': 0,
-    'quickgame.png': 0
+    'quickgame.png': 0,
+    'cemera.png':0
 }
 def execute_condition(current_time,condition, last_executed_times, interval):
     if current_time - last_executed_times[condition] >= interval:
@@ -94,15 +102,15 @@ isshutdown = False
 
 def exit(shutdown):
     time.sleep(2)
-    pyautogui.press('esc')
-    time.sleep(1)
     while True:
         getScreemshot()
         time.sleep(0.8)
+        routineclick('./imgs/return.png','返回主界面')
         routineclick('./imgs/exit.png','退出游戏')
+        time.sleep(3)
         if ifrouutineclick('./imgs/exitis.png','是'):
             if shutdown:
-                os.system("shutdown -s -t  5 ")
+                os.system("shutdown -s -t  30 ")
             sys.exit()#退出程序
 
 def main(limitNumber,shutdown,gameNumber):
@@ -114,6 +122,10 @@ def main(limitNumber,shutdown,gameNumber):
         if execute_condition(current_time,'ready.png', last_executed_times, 30):
             if ifroutinpress('./imgs/ready3.png', '准备', 'space'):
                 time.sleep(20)
+                actionready = True
+        if execute_condition(current_time,'cemera.png', last_executed_times, 5):
+            if ifthereimg('./imgs/cemera.png', '暂停行动'):
+                actionready = False
         if execute_condition(current_time, 'endgame.png', last_executed_times, 5):
             if ifrouutineclick('./imgs/end.png', '结束游戏'):
                 actionready = False
@@ -135,5 +147,5 @@ def main(limitNumber,shutdown,gameNumber):
         To_action = True
         time.sleep(0.3)
 if __name__ == '__main__':
-    main()
-    #exit()
+    main(False,False,1)
+    # exit(False)
