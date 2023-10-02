@@ -17,7 +17,7 @@ class Ui_mainWindow(object):
         mainWindow.resize(456, 245)
         mainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         mainWindow.setStyleSheet("#mainWindow{\n"
-"    background-color: qlineargradient(spread:pad, x1:0.233831, y1:0.267, x2:0.831025, y2:0.880364, stop:0 rgba(245,247,250,1), stop:1 rgba(195,207,226));\n"
+"    background-color: qlineargradient(spread:pad, x1:0.233831, y1:0.267, x2:0.831025, y2:0.880364, stop:0 rgba(245,247,250,1), stop:1 rgba(195,207,226,1));\n"
 "}")
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setObjectName("centralwidget")

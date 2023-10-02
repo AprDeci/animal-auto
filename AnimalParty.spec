@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['Gui.py'],
+    ['mainGui.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -41,5 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['ico.png'],
+    icon=['imgs\\ui\\ico.png'],
 )

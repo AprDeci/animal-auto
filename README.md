@@ -1,5 +1,11 @@
 # Animalparty-auto
 
+## v1.7
+
+添加统计页面,实时显示操作()
+
+![image-20231002090348292](https://luchetuchuang.oss-cn-beijing.aliyuncs.com/aprimg/image-20231002090348292.png)
+
 ## v1.6
 
 调整GUI细节,添加终止功能.
@@ -10,7 +16,7 @@
 
 ------
 
- 动物派对自动匹配挂机脚本
+动物派对自动匹配挂机脚本
 
 无效调整分辨率为1080p,管理员开启
 
@@ -20,9 +26,12 @@
 
 ![image-20230929104224279](https://luchetuchuang.oss-cn-beijing.aliyuncs.com/aprimg/image-20230929104224279.png)
 
-代码太烂了.
+## To Do
 
-仅准备后结束游戏前执行模拟操作.
+- 全分辨率支持
+- 检测更新
+- 后台操作
+- 无用的功能
 
-![未命名绘图.drawio](https://luchetuchuang.oss-cn-beijing.aliyuncs.com/aprimg/未命名绘图.drawio.png)
+
 
