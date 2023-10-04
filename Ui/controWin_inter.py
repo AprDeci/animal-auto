@@ -1,26 +1,34 @@
 import os
 import sys
 import time
-
+import configparser as ini
 import cv2
 import pyautogui
 from PyQt5.QtCore import QThread, pyqtSignal
-
 import doacntion
+import freeocr
+import paddleOcr
 from Ui.controWin import Ui_mainWindow
 from PyQt5.QtWidgets import QWidget, QMainWindow
 from qfluentwidgets import FluentIcon as FIF
 THRESHOLD=0.02
+class getInfoThread(QThread):
+    def __init__(self):
+        pass
+    def run(self):
+        get_exp=freeocr.expocr("./imgs/exp.png")
+        print(get_exp)
 
 class WorkerThread(QThread):
     send_signal = pyqtSignal(str)
     QcurrentNum_signal = pyqtSignal(str)
+    Qgetexp_signal = pyqtSignal(str)
     def __init__(self, operation_func, *args, **kwargs):
         super().__init__()
         self.operation_func = operation_func
         self.args = args
         self.kwargs = kwargs
-
+        self.ingame = False
         self.to_action = True
         self.last_executed_times = {
             'begin_room.png': 0,
@@ -30,10 +38,17 @@ class WorkerThread(QThread):
             'expup2.png': 0,
             'quickgame.png': 0,
             'cemera.png': 0,
-            'gamenum':0
+            'gamenum':0,
+            'longtimeO.png':0,
+            'whengame.png':0
         }
         self.action_ready = False
         self.current_gameNum = 0
+        conf = ini.ConfigParser()
+        conf.read("./imgs/config.ini",encoding='utf-8')
+        self.localOcr = conf.get("ocr", "localocr")
+        self.FreeOcr = conf.get("ocr", "freeocr")
+        self.FreeOcr_api = conf.get("ocr", "freeocrapi")
 
     def run(self):
         if self.operation_func=="quickgame":
@@ -44,8 +59,11 @@ class WorkerThread(QThread):
         self.terminate()
         self.finished.emit()
 
-    def get_screenshot(self):
-        pyautogui.screenshot().save("./imgs/screenshot.png")
+    def get_screenshot(self,region=None):
+        if region==None:
+            pyautogui.screenshot().save("./imgs/screenshot.png")
+        else:
+            pyautogui.screenshot(region=region).save("./imgs/exp.png")
 
     def get_xy(self, img_path):
         img = cv2.imread("./imgs/screenshot.png")
@@ -92,11 +110,11 @@ class WorkerThread(QThread):
     def ifthereimg(self, img_path, name):
         avg = self.get_xy(img_path)
         if avg == None:
-            return False
+            return False,avg
         else:
             print(f"{name},{avg}")
             self.send_signal.emit(f"{name},{avg}\n")
-            return True
+            return True,avg
 
     def routinespace(self, img_path, name):
         avg = self.get_xy(img_path)
@@ -121,6 +139,15 @@ class WorkerThread(QThread):
             self.to_action = False
             return True
 
+    def Ocr(self, img_path):
+        if self.localOcr=='True':
+            return paddleOcr.getexp(img_path)
+        else:
+            if self.FreeOcr_api==None:
+                return freeocr.getexp(img_path)
+            else:
+                return freeocr.getexp(img_path,self.FreeOcr_api)
+
     def execute_condition(self, current_time, condition, interval):
         if current_time - self.last_executed_times[condition] >= interval:
             self.last_executed_times[condition] = current_time
@@ -130,38 +157,56 @@ class WorkerThread(QThread):
 
     def quickgame(self, limit_number, shutdown, game_number):
         while True:
-            print("test")
             current_time = time.time()
             self.get_screenshot()
             time.sleep(0.3)
-            if self.execute_condition(current_time, 'ready.png', 30):
-                if self.ifroutinpress('./imgs/ready3.png', '准备', 'space'):
-                    time.sleep(20)
-                    self.action_ready = True
-            if self.execute_condition(current_time, 'cemera.png', 5):
-                if self.ifthereimg('./imgs/cemera.png', '暂停行动'):
-                    self.action_ready = False
-            if self.execute_condition(current_time, 'endgame.png', 5):
-                if self.ifrouutineclick('./imgs/end.png', '结束游戏'):
-                    self.action_ready = False
-                    if (limit_number):
-                        if (self.current_gameNum == game_number):
-                            self.exit(shutdown)
-            if self.execute_condition(current_time, 'begin.png', 5):
-                if self.ifrouutineclick('./imgs/begin.png', '开始游戏'):
-                    self.current_gameNum += 1
-                    self.QcurrentNum_signal.emit(f"🎮当前进行第{self.current_gameNum}局")
-            if self.execute_condition(current_time, 'expup2.png', 50):
-                self.routine_click('./imgs/expup.png', '升级')
-            if self.execute_condition(current_time, 'expup2.png', 50):
-                self.routine_click('./imgs/expup2.png', '升级2')
-            if self.execute_condition(current_time, 'quickgame.png', 50):
-                self.routine_click('./imgs/quickgame.png', '快速游戏')
-            if self.action_ready:  # 只在准备后结束前运行
-                if self.to_action:  # 只在没有检测到目标图片时运行
-                    doacntion.action(self.current_gameNum)
-            self.to_action = True
-            time.sleep(0.3)
+            if not self.ingame:#游戏状态外
+                if self.execute_condition(current_time, 'ready.png', 30):
+                    if self.ifroutinpress('./imgs/ready3.png', '准备', 'space'):
+                        time.sleep(20)
+                        self.action_ready = True
+                        self.ingame = True
+                if self.execute_condition(current_time, 'endgame.png', 5):
+                    avg=self.ifthereimg('./imgs/end.png', '结束游戏')[1]
+                    if avg is not None:
+                        self.get_screenshot(region=(1641,266,70,40))
+                        pyautogui.leftClick(avg[0],avg[1])
+                        self.action_ready = False
+                        if (limit_number):
+                            if (self.current_gameNum == game_number):
+                                self.exit(shutdown)
+                            break
+                        getexp=self.Ocr("./imgs/exp.png")
+                        if getexp == 'error':
+                            continue
+                        else:
+                            self.send_signal.emit(f"获取经验: {getexp}\n")
+                            self.Qgetexp_signal.emit(getexp)
+                if self.execute_condition(current_time, 'begin.png', 5):
+                    if self.ifrouutineclick('./imgs/begin.png', '开始游戏'):
+                        self.current_gameNum += 1
+                        self.QcurrentNum_signal.emit(f"🎮当前进行第{self.current_gameNum}局")
+                if self.execute_condition(current_time, 'expup2.png', 50):
+                    self.routine_click('./imgs/expup.png', '升级')
+                if self.execute_condition(current_time, 'expup2.png', 50):
+                    self.routine_click('./imgs/expup2.png', '升级2')
+                if self.execute_condition(current_time, 'quickgame.png', 50):
+                    self.routine_click('./imgs/quickgame.png', '快速游戏')
+                if self.execute_condition(current_time, 'longtimeO.png', 50):
+                    self.routine_click('./imgs/longtimeO.png', '长时间不操作')
+            else:
+                if self.execute_condition(current_time,'whengame.png',50):
+                    if self.ifthereimg('./imgs/whengame.png', '在游戏中')[0] or self.ifthereimg('./imgs/whengame2.png', '在游戏中')[0]:
+                        self.action_ready=True
+                if self.execute_condition(current_time, 'cemera.png', 5):
+                    if self.ifthereimg('./imgs/cemera.png', '暂停行动')[0]:
+                        self.action_ready = False
+                        self.ingame=False
+                if self.action_ready:  # 只在准备后结束前运行
+                    if self.to_action:  # 只在没有检测到目标图片时运行
+                        doacntion.action(self.current_gameNum)
+                self.to_action = True
+                time.sleep(0.3)
 
     def exit(self, shutdown):
         time.sleep(2)
@@ -190,10 +235,11 @@ class controlWin_inter(QMainWindow,Ui_mainWindow):
     print_signal = pyqtSignal(str)
     switch_signal = pyqtSignal()
     currentNum_signal=pyqtSignal(str)
+    currentExp_signal=pyqtSignal(str)
     def __init__(self,parent=None):
         super().__init__(parent=parent)
         self.setupUi(self)
-        self.setContentsMargins(0, 20, 0, 0)
+        self.setContentsMargins(0, 40, 0, 0)
         self.Githublink.setIcon(FIF.GITHUB)
         self.BlogLink.setIcon(FIF.LINK)
         self.operation_thread=None
@@ -212,6 +258,7 @@ class controlWin_inter(QMainWindow,Ui_mainWindow):
             self.operation_thread = WorkerThread(operation_func, *args, **kwargs)
             self.operation_thread.send_signal.connect(self.sendmessage)
             self.operation_thread.QcurrentNum_signal.connect(self.currentNumLabel_change)
+            self.operation_thread.Qgetexp_signal.connect(self.currentExpLabel_change)
             self.operation_thread.start()
             match operation_func:
                 case "roomgame":
@@ -247,7 +294,8 @@ class controlWin_inter(QMainWindow,Ui_mainWindow):
         
     def currentNumLabel_change(self,str):
         self.currentNum_signal.emit(str)
-        
-        
+    def currentExpLabel_change(self,str):
+        self.currentExp_signal.emit(str)
+
 
 

@@ -1,12 +1,10 @@
 build
 dist
 imgs/screenshot.png
-window.ui
-动物派对挂机脚本.exe
-动物派对挂机脚本.spec
-
-imgs/screenshot.png
-
 .idea
 _pyache_
 AnimalParty.spec
+.ui
+Ui/__pycache__/
+imgs/nums
+imgs/num

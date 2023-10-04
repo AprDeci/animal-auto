@@ -19,13 +19,77 @@ class Ui_Cmdoutput(object):
 "    background-color: qlineargradient(spread:pad, x1:0.233831, y1:0.267, x2:0.831025, y2:0.880364, stop:0 rgba(245,247,250,1), stop:1 rgba(195,207,226));\n"
 "}")
         self.Cmd = TextEdit(Cmdoutput)
-        self.Cmd.setGeometry(QtCore.QRect(28, 60, 401, 176))
+        self.Cmd.setGeometry(QtCore.QRect(28, 74, 401, 195))
+        self.Cmd.setStyleSheet("LineEdit, TextEdit, PlainTextEdit {\n"
+"    color: black;\n"
+"    background-color: rgba(255, 255, 255, 0.7);\n"
+"    border: 1px solid rgba(0, 0, 0, 13);\n"
+"    border-bottom: 1px solid rgba(0, 0, 0, 100);\n"
+"    border-radius: 5px;\n"
+"    /* font: 14px \"Segoe UI\", \"Microsoft YaHei\"; */\n"
+"    padding: 0px 10px;\n"
+"    selection-background-color: #00a7b3;\n"
+"}\n"
+"\n"
+"TextEdit,\n"
+"PlainTextEdit {\n"
+"    padding: 2px 3px 2px 8px;\n"
+"}\n"
+"\n"
+"LineEdit:hover, TextEdit:hover, PlainTextEdit:hover {\n"
+"    background-color: rgba(249, 249, 249, 0.5);\n"
+"    border: 1px solid rgba(0, 0, 0, 13);\n"
+"    border-bottom: 1px solid rgba(0, 0, 0, 100);\n"
+"}\n"
+"\n"
+"LineEdit:focus {\n"
+"    border-bottom: 1px solid rgba(0, 0, 0, 13);\n"
+"    background-color: white;\n"
+"}\n"
+"\n"
+"TextEdit:focus,\n"
+"PlainTextEdit:focus {\n"
+"    border-bottom: 1px solid #009faa;\n"
+"    background-color: white;\n"
+"}\n"
+"\n"
+"LineEdit:disabled, TextEdit:disabled,\n"
+"PlainTextEdit:disabled {\n"
+"    color: rgba(0, 0, 0, 150);\n"
+"    background-color: rgba(249, 249, 249, 0.3);\n"
+"    border: 1px solid rgba(0, 0, 0, 13);\n"
+"    border-bottom: 1px solid rgba(0, 0, 0, 13);\n"
+"}\n"
+"\n"
+"#lineEditButton {\n"
+"    background-color: transparent;\n"
+"    border-radius: 4px;\n"
+"    margin: 0;\n"
+"}\n"
+"\n"
+"#lineEditButton:hover {\n"
+"    background-color: rgba(0, 0, 0, 9);\n"
+"}\n"
+"\n"
+"#lineEditButton:pressed {\n"
+"    background-color: rgba(0, 0, 0, 6);\n"
+"}\n"
+"")
         self.Cmd.setReadOnly(False)
         self.Cmd.setMarkdown("")
         self.Cmd.setObjectName("Cmd")
         self.currentNumLabel = StrongBodyLabel(Cmdoutput)
-        self.currentNumLabel.setGeometry(QtCore.QRect(290, 30, 131, 20))
+        self.currentNumLabel.setGeometry(QtCore.QRect(317, 45, 113, 19))
         self.currentNumLabel.setObjectName("currentNumLabel")
+        self.explabel = StrongBodyLabel(Cmdoutput)
+        self.explabel.setGeometry(QtCore.QRect(41, 45, 160, 25))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.explabel.sizePolicy().hasHeightForWidth())
+        self.explabel.setSizePolicy(sizePolicy)
+        self.explabel.setMinimumSize(QtCore.QSize(1, 0))
+        self.explabel.setObjectName("explabel")
 
         self.retranslateUi(Cmdoutput)
         QtCore.QMetaObject.connectSlotsByName(Cmdoutput)
@@ -33,5 +97,11 @@ class Ui_Cmdoutput(object):
     def retranslateUi(self, Cmdoutput):
         _translate = QtCore.QCoreApplication.translate
         Cmdoutput.setWindowTitle(_translate("Cmdoutput", "Form"))
+        self.Cmd.setHtml(_translate("Cmdoutput", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Segoe UI\',\'Microsoft YaHei\',\'PingFang SC\',\'SimSun\'; font-size:14px; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.currentNumLabel.setText(_translate("Cmdoutput", "🎮当前进行第0局"))
+        self.explabel.setText(_translate("Cmdoutput", "🕹总计获取经验:"))
 from qfluentwidgets import StrongBodyLabel, TextEdit
