@@ -11,13 +11,11 @@ import paddleOcr
 from Ui.controWin import Ui_mainWindow
 from PyQt5.QtWidgets import QWidget, QMainWindow
 from qfluentwidgets import FluentIcon as FIF
+
+from circle_detection import isthereCircle
+
 THRESHOLD=0.02
-class getInfoThread(QThread):
-    def __init__(self):
-        pass
-    def run(self):
-        get_exp=freeocr.expocr("./imgs/exp.png")
-        print(get_exp)
+
 
 class WorkerThread(QThread):
     send_signal = pyqtSignal(str)
@@ -170,6 +168,7 @@ class WorkerThread(QThread):
                     avg=self.ifthereimg('./imgs/end.png', '结束游戏')[1]
                     if avg is not None:
                         self.get_screenshot(region=(1641,266,70,40))
+                        time.sleep(0.3)
                         pyautogui.leftClick(avg[0],avg[1])
                         self.action_ready = False
                         if (limit_number):
@@ -177,7 +176,8 @@ class WorkerThread(QThread):
                                 self.exit(shutdown)
                             break
                         getexp=self.Ocr("./imgs/exp.png")
-                        if getexp == 'error':
+                        if getexp == 'error' or getexp =='Network error':
+                            self.send_signal.emit(f"没有读取到数字或网络请求失败了\n")
                             continue
                         else:
                             self.send_signal.emit(f"获取经验: {getexp}\n")
@@ -196,7 +196,7 @@ class WorkerThread(QThread):
                     self.routine_click('./imgs/longtimeO.png', '长时间不操作')
             else:
                 if self.execute_condition(current_time,'whengame.png',50):
-                    if self.ifthereimg('./imgs/whengame.png', '在游戏中')[0] or self.ifthereimg('./imgs/whengame2.png', '在游戏中')[0]:
+                    if isthereCircle('./imgs/screenshot.png'):#检测头像
                         self.action_ready=True
                 if self.execute_condition(current_time, 'cemera.png', 5):
                     if self.ifthereimg('./imgs/cemera.png', '暂停行动')[0]:
@@ -223,14 +223,22 @@ class WorkerThread(QThread):
 
     def roomgame(self):
         while True:
-            print("roomgame")
             self.get_screenshot()
             time.sleep(0.3)
+            pyautogui.press('w')
             self.routinespace('./imgs/ready3.png', '准备')
             self.routine_click('./imgs/begin_room.png', '开始游戏')
             self.routine_click('./imgs/expup.png', '升级')
             self.routine_click('./imgs/expup2.png', '升级2')
-            pyautogui.press('w')
+            if self.ifthereimg('./imgs/xiangce.png', '结算')[0]:
+                self.get_screenshot(region=(1645,448,70,40))
+                getexp=self.Ocr("./imgs/exp.png")
+                if getexp == 'error':
+                    continue
+                else:
+                    self.send_signal.emit(f"获取经验: {getexp}\n")
+                    self.Qgetexp_signal.emit(getexp)
+                    time.sleep(8)
 class controlWin_inter(QMainWindow,Ui_mainWindow):
     print_signal = pyqtSignal(str)
     switch_signal = pyqtSignal()
@@ -264,6 +272,7 @@ class controlWin_inter(QMainWindow,Ui_mainWindow):
                 case "roomgame":
                     self.roombuttom.setText("停止脚本")
                     self.quickgamebutton.setEnabled(False)
+                    self.switch_signal.emit()
                 case "quickgame":
                     self.quickgamebutton.setText("停止脚本")
                     self.roombuttom.setEnabled(False)

@@ -6,17 +6,17 @@ from PyQt5.QtGui import QDesktopServices, QIcon
 from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import SplitFluentWindow, setThemeColor, NavigationAvatarWidget, NavigationItemPosition, MessageBox, \
     InfoBar, InfoBarPosition, FluentIcon
-from Ui.cmdoutput_inter import cmdoutput
-from Ui.controWin_inter import  controlWin_inter
+from cmdoutput_inter import cmdoutput
+from controWin_inter import  controlWin_inter
 from Ui.myIcon import myIcon
-from Ui.setup_inter import setupWin
+from setup_inter import setupWin
 
-current_version = 1.8
+current_version = 1.81
 class mainwindow(SplitFluentWindow):
     def __init__(self):
         super().__init__()
         setThemeColor('#0066CC')
-        self.setWindowTitle("动物排队挂机脚本")
+        self.setWindowTitle(f"动物排队挂机脚本{current_version}")
         self.setWindowIcon(QIcon("./imgs/ui/ico.png"))
         self.setMinimumSize(500,260)
         self.resize(500, 290)
@@ -55,28 +55,41 @@ class mainwindow(SplitFluentWindow):
         self.switchTo(self.cmdoutput)
 
     def check_version(self):
-        latest_version= requests.get('https://api.github.com/repos/q1263868407/animal-auto/releases/latest').json()['tag_name'][1:]
-        if current_version<float(latest_version):
+        try:
+            latest_version= requests.get('https://api.github.com/repos/q1263868407/animal-auto/releases/latest').json()['tag_name'][1:]
+            if current_version < float(latest_version):
+                InfoBar.new(
+                    icon=FluentIcon.GITHUB,
+                    title='',
+                    content=f"作者又叕叒更新啦,新版本{latest_version}已经发布啦,快去下载吧",
+                    orient=Qt.Horizontal,
+                    isClosable=True,  # disable close button
+                    position=InfoBarPosition.TOP_LEFT,
+                    duration=4000,
+                    parent=self
+                ).setCustomBackgroundColor("#F5C563", "#000000")
+            else:
+                InfoBar.success(
+                    title='',
+                    content=f"最新版本呢!",
+                    orient=Qt.Horizontal,
+                    isClosable=True,  # disable close button
+                    position=InfoBarPosition.TOP_LEFT,
+                    duration=2000,
+                    parent=self
+                )
+        except Exception as e:
             InfoBar.new(
                 icon=FluentIcon.GITHUB,
                 title='',
-                content=f"作者又叕叒更新啦,新版本{latest_version}已经发布啦,快去下载吧",
+                content=f"网络请求失败,版本检测不到了o(╥﹏╥)o",
                 orient=Qt.Horizontal,
                 isClosable=True,  # disable close button
                 position=InfoBarPosition.TOP_LEFT,
                 duration=4000,
                 parent=self
-            ).setCustomBackgroundColor("#F5C563","#000000")
-        else:
-            InfoBar.success(
-                title='',
-                content=f"最新版本呢!",
-                orient=Qt.Horizontal,
-                isClosable=True,  # disable close button
-                position=InfoBarPosition.TOP_LEFT,
-                duration=2000,
-                parent=self
-            )
+            ).setCustomBackgroundColor("#FF6A6A","#000000")
+
 if __name__=="__main__":
     QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
