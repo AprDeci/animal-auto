@@ -52,6 +52,7 @@ class Ui_setup(object):
         self.horizontalLayout.addItem(spacerItem)
         self.HyperlinkLabel = HyperlinkLabel(self.layoutWidget)
         self.HyperlinkLabel.setObjectName("HyperlinkLabel")
+        self.HyperlinkLabel.setUrl('https://ocr.space/')
         self.horizontalLayout.addWidget(self.HyperlinkLabel)
         self.OK = PrimaryPushButton(setup)
         self.OK.setGeometry(QtCore.QRect(270, 210, 153, 32))

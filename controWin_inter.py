@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QWidget, QMainWindow
 from qfluentwidgets import FluentIcon as FIF
 
 from circle_detection import isthereCircle
+from PickExpnumber import getExpimg
 
 THRESHOLD=0.02
 
@@ -167,7 +168,8 @@ class WorkerThread(QThread):
                 if self.execute_condition(current_time, 'endgame.png', 5):
                     avg=self.ifthereimg('./imgs/end.png', '结束游戏')[1]
                     if avg is not None:
-                        self.get_screenshot(region=(1641,266,70,40))
+                        self.get_screenshot()#获取截图捕获经验
+                        getExpimg('./imgs/screenshot.png','quickgame')
                         time.sleep(0.3)
                         pyautogui.leftClick(avg[0],avg[1])
                         self.action_ready = False
@@ -231,7 +233,9 @@ class WorkerThread(QThread):
             self.routine_click('./imgs/expup.png', '升级')
             self.routine_click('./imgs/expup2.png', '升级2')
             if self.ifthereimg('./imgs/xiangce.png', '结算')[0]:
-                self.get_screenshot(region=(1645,448,70,40))
+                self.get_screenshot()  # 获取截图捕获经验
+                getExpimg('./imgs/screenshot.png', 'room')
+                time.sleep(0.3)
                 getexp=self.Ocr("./imgs/exp.png")
                 if getexp == 'error':
                     continue
