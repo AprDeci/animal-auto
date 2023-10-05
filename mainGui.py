@@ -56,7 +56,7 @@ class mainwindow(SplitFluentWindow):
 
     def check_version(self):
         try:
-            latest_version= requests.get('https://api.github.com/repos/q1263868407/animal-auto/releases/latest').json()['tag_name'][1:]
+            latest_version= requests.get('https://api.github.com/repos/AprDeci/animal-auto/releases/latest').json()['tag_name'][1:]
             if current_version < float(latest_version):
                 InfoBar.new(
                     icon=FluentIcon.GITHUB,
