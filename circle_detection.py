@@ -1,4 +1,6 @@
 import cv2
+import numpy as np
+
 
 def isthereCircle(filepath):
     img = cv2.imread(filepath, 0)
@@ -15,3 +17,7 @@ def isthereCircle(filepath):
         return True
     else:
         return False
+
+
+if __name__ == '__main__':
+    isthereCircle('./testrecources/1.png')

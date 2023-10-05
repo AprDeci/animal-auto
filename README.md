@@ -8,6 +8,8 @@
 
 **自建房间自己创房间设密码添加人机挂机**
 
+![动物派对GUIv1.81](https://luchetuchuang.oss-cn-beijing.aliyuncs.com/aprimg/动物派对GUIv1.81.gif)
+
 ------
 ## To Do
 
@@ -36,8 +38,6 @@
 OCR分为本地和API,不用本地可以删除paddelocr文件夹.设置界面可以设定OCR方式.
 
 高分辨率用户请设置1080p并挂在左上角
-
-<img src="https://luchetuchuang.oss-cn-beijing.aliyuncs.com/aprimg/image-20231004133828729.png" alt="image-20231004133828729" style="zoom: 80%;" />
 
 ## v1.7
 
