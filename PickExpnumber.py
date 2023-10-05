@@ -21,7 +21,6 @@ def getExpimg(path,model):
     mask = cv2.inRange(image, lower_color, upper_color)
     # 形态学操作
     kernel = np.ones((10, 10), np.uint8)
-    erosion = cv2.erode(mask, kernel, iterations=1)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     # 查找轮廓
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE,)
@@ -35,4 +34,4 @@ def getExpimg(path,model):
     rectangle_x,rectangle_y,rectangle_w,rectangle_h = result[0]-tolerancex,result[1]-tolerancey,result[2]+tolerancex+10,result[3]+tolerancey+10
     exp_pic = image_path[rectangle_y:rectangle_y+rectangle_h,rectangle_x:rectangle_x+rectangle_w]
     cv2.imwrite('./imgs/exp.png',exp_pic)
-getExpimg('./testrecources/expjs.png','room')
+

@@ -229,7 +229,9 @@ class WorkerThread(QThread):
             time.sleep(0.3)
             pyautogui.press('w')
             self.routinespace('./imgs/ready3.png', '准备')
-            self.routine_click('./imgs/begin_room.png', '开始游戏')
+            if self.ifrouutineclick('./imgs/begin_room.png', '开始游戏'):
+                self.current_gameNum += 1
+                self.QcurrentNum_signal.emit(f"🎮当前进行第{self.current_gameNum}局")
             self.routine_click('./imgs/expup.png', '升级')
             self.routine_click('./imgs/expup2.png', '升级2')
             if self.ifthereimg('./imgs/xiangce.png', '结算')[0]:
