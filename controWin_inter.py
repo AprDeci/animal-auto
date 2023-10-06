@@ -56,7 +56,7 @@ class WorkerThread(QThread):
         if self.operation_func=="quickgame":
             self.quickgame(*self.args, **self.kwargs)
         elif self.operation_func=="roomgame":
-            self.roomgame()
+            self.roomgame(*self.args, **self.kwargs)
     def stop(self):
         self.terminate()
         self.finished.emit()
@@ -224,7 +224,7 @@ class WorkerThread(QThread):
                     os.system("shutdown -s -t  30 ")
                 sys.exit()  # 退出程序
 
-    def roomgame(self, limit_number, shutdown):
+    def roomgame(self, shutdown):
         while True:
             self.get_screenshot()
             time.sleep(0.3)
@@ -307,7 +307,7 @@ class controlWin_inter(QMainWindow,Ui_mainWindow):
 
     def beginroom(self):
         self.getinfo()
-        self.start_operation_thread("roomgame",self.limitNumber, self.shutdown)
+        self.start_operation_thread("roomgame",self.shutdown)
 
     def sendmessage(self,str):
         self.print_signal.emit(str)
