@@ -3,7 +3,10 @@ import os.path as path
 ocr = GetOcrApi('./PaddleOCR-json_v.1.3.0/PaddleOCR-json.exe')
 def getexp(img_path):
     img = path.abspath(img_path)
-    result_pending = ocr.run(img)
+    try:
+        result_pending = ocr.run(img)
+    except:
+        return  'error'
     result = result_pending['data']
     if type(result) == str:
         print('error')

@@ -3,6 +3,8 @@ import sys
 import time
 import configparser as ini
 import cv2
+import mss
+import numpy as np
 import pyautogui
 from PyQt5.QtCore import QThread, pyqtSignal
 import doacntion
@@ -14,6 +16,8 @@ from qfluentwidgets import FluentIcon as FIF
 
 from circle_detection import isthereCircle
 from PickExpnumber import getExpimg
+import pygetwindow as gw
+
 
 THRESHOLD=0.02
 
@@ -48,7 +52,6 @@ class WorkerThread(QThread):
         self.localOcr = conf.get("ocr", "localocr")
         self.FreeOcr = conf.get("ocr", "freeocr")
         self.FreeOcr_api = conf.get("ocr", "freeocrapi")
-
     def run(self):
         if self.operation_func=="quickgame":
             self.quickgame(*self.args, **self.kwargs)
@@ -168,9 +171,7 @@ class WorkerThread(QThread):
                 if self.execute_condition(current_time, 'endgame.png', 5):
                     avg=self.ifthereimg('./imgs/end.png', '结束游戏')[1]
                     if avg is not None:
-                        self.get_screenshot()#获取截图捕获经验
-                        getExpimg('./imgs/screenshot.png','quickgame')
-                        time.sleep(0.3)
+                        getExpimg('quickgame')
                         pyautogui.leftClick(avg[0],avg[1])
                         self.action_ready = False
                         if (limit_number):
@@ -223,7 +224,7 @@ class WorkerThread(QThread):
                     os.system("shutdown -s -t  30 ")
                 sys.exit()  # 退出程序
 
-    def roomgame(self):
+    def roomgame(self, limit_number, shutdown):
         while True:
             self.get_screenshot()
             time.sleep(0.3)
@@ -235,12 +236,15 @@ class WorkerThread(QThread):
             self.routine_click('./imgs/expup.png', '升级')
             self.routine_click('./imgs/expup2.png', '升级2')
             if self.ifthereimg('./imgs/xiangce.png', '结算')[0]:
-                self.get_screenshot()  # 获取截图捕获经验
-                getExpimg('./imgs/screenshot.png', 'room')
+                getExpimg('room')
                 time.sleep(0.3)
                 getexp=self.Ocr("./imgs/exp.png")
                 if getexp == 'error':
                     continue
+                elif getexp == '0':
+                    if(shutdown):
+                        os.system("shutdown -s -t  30 ")
+                    sys.exit()
                 else:
                     self.send_signal.emit(f"获取经验: {getexp}\n")
                     self.Qgetexp_signal.emit(getexp)
@@ -302,7 +306,8 @@ class controlWin_inter(QMainWindow,Ui_mainWindow):
         self.start_operation_thread("quickgame",self.limitNumber, self.shutdown, self.gameNumber)
 
     def beginroom(self):
-        self.start_operation_thread("roomgame")
+        self.getinfo()
+        self.start_operation_thread("roomgame",self.limitNumber, self.shutdown)
 
     def sendmessage(self,str):
         self.print_signal.emit(str)

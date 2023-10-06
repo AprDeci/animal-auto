@@ -11,7 +11,8 @@ from controWin_inter import  controlWin_inter
 from Ui.myIcon import myIcon
 from setup_inter import setupWin
 
-current_version = 1.82
+
+current_version = 1.83
 class mainwindow(SplitFluentWindow):
     def __init__(self):
         super().__init__()
