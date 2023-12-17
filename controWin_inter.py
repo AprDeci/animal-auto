@@ -43,7 +43,8 @@ class WorkerThread(QThread):
             'cemera.png': 0,
             'gamenum':0,
             'longtimeO.png':0,
-            'whengame.png':0
+            'whengame.png':0,
+        'openrewards.png':0
         }
         self.action_ready = False
         self.current_gameNum = 0
@@ -193,6 +194,8 @@ class WorkerThread(QThread):
                     self.routine_click('./imgs/expup.png', '升级')
                 if self.execute_condition(current_time, 'expup2.png', 50):
                     self.routine_click('./imgs/expup2.png', '升级2')
+                if self.execute_condition(current_time, 'openrewards.png', 50):
+                    self.routine_click('./imgs/openrewards.png', '领取奖励')
                 if self.execute_condition(current_time, 'quickgame.png', 50):
                     self.routine_click('./imgs/quickgame.png', '快速游戏')
                 if self.execute_condition(current_time, 'longtimeO.png', 50):
@@ -226,6 +229,7 @@ class WorkerThread(QThread):
 
     def roomgame(self, shutdown):
         while True:
+            current_time = time.time()
             self.get_screenshot()
             time.sleep(0.3)
             pyautogui.press('w')
@@ -235,6 +239,8 @@ class WorkerThread(QThread):
                 self.QcurrentNum_signal.emit(f"🎮当前进行第{self.current_gameNum}局")
             self.routine_click('./imgs/expup.png', '升级')
             self.routine_click('./imgs/expup2.png', '升级2')
+            if self.execute_condition(current_time, 'openrewards.png', 50):
+                self.routine_click('./imgs/openrewards.png', '领取奖励')
             if self.ifthereimg('./imgs/xiangce.png', '结算')[0]:
                 getExpimg('room')
                 time.sleep(0.3)
