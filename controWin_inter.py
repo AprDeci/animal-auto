@@ -195,7 +195,7 @@ class WorkerThread(QThread):
                 if self.execute_condition(current_time, 'expup2.png', 50):
                     self.routine_click('./imgs/expup2.png', '升级2')
                 if self.execute_condition(current_time, 'openrewards.png', 50):
-                    self.routine_click('./imgs/openrewards.png', '领取奖励')
+                    self.ifrouutineclick('./imgs/openrewards.png', '领取奖励')
                 if self.execute_condition(current_time, 'quickgame.png', 50):
                     self.routine_click('./imgs/quickgame.png', '快速游戏')
                 if self.execute_condition(current_time, 'longtimeO.png', 50):
